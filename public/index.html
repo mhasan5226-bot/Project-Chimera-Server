@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chimera Control Panel</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #00ff88;
+            text-align: center;
+        }
+        .status-box {
+            background-color: #2d2d2d;
+            border: 1px solid #00ff88;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .data-display {
+            background-color: #2d2d2d;
+            padding: 15px;
+            border-radius: 8px;
+            min-height: 100px;
+            word-wrap: break-word;
+        }
+        .loading {
+            color: #ffcc00;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Project Chimera Control Panel</h1>
+        <div class="status-box">
+            <h3>Connection Status: <span id="status">Connecting...</span></h3>
+        </div>
+        <h3>Target Data:</h3>
+        <div class="data-display" id="dataOutput">
+            <span class="loading">Waiting for data...</span>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        socket.on('connect', function() {
+            document.getElementById('status').innerText = "Connected";
+            document.getElementById('status').style.color = "#00ff88";
+        });
+
+        socket.on('disconnect', function() {
+            document.getElementById('status').innerText = "Disconnected";
+            document.getElementById('status').style.color = "#ff4444";
+        });
+
+        socket.on('update_client_ui', function(data) {
+            var output = document.getElementById('dataOutput');
+            output.innerHTML = "<strong>Data Received:</strong><br>" + JSON.stringify(data, null, 2);
+        });
+    </script>
+</body>
+</html>
